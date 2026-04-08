@@ -4,6 +4,7 @@ interface Product {
   price: number;
   description: string;
   category: string;
+  image?: string;
 }
 
 interface ProductCardProps {
@@ -14,12 +15,17 @@ interface ProductCardProps {
 const ProductCard = ({ product, onAddToCart }: ProductCardProps) => {
   return (
     <div className="group border border-border rounded-xl bg-card text-card-foreground flex flex-col overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-      {/* Image placeholder */}
-      <div className="h-44 bg-muted flex items-center justify-center text-5xl">
-        {product.category === "Electronics" && "📱"}
-        {product.category === "Clothing" && "👕"}
-        {product.category === "Books" && "📚"}
-        {!["Electronics", "Clothing", "Books"].includes(product.category) && "📦"}
+      {/* Product Image */}
+      <div className="h-48 bg-muted overflow-hidden">
+        {product.image ? (
+          <img
+            src={product.image}
+            alt={product.name}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-4xl text-muted-foreground">📦</div>
+        )}
       </div>
 
       <div className="p-5 flex flex-col gap-2 flex-1">
