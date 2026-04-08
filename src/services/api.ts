@@ -75,7 +75,7 @@ export const getProducts = async () => {
 
 export const createProduct = async (product: { name: string; price: number; description: string; category: string }) => {
   if (USE_MOCK) {
-    const newProduct = { ...product, _id: String(nextProductId++) };
+    const newProduct = { ...product, _id: String(nextProductId++), image: "" };
     mockProducts.push(newProduct);
     return newProduct;
   }
