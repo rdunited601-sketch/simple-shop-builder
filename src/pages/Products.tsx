@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { getProducts } from "@/services/api";
 import ProductCard from "@/components/ProductCard";
 
@@ -12,10 +12,26 @@ interface CartItem {
 const Products = () => {
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All");
 
   useEffect(() => {
     getProducts().then((data) => { setProducts(data); setLoading(false); });
   }, []);
+
+  const categories = useMemo(() => {
+    const cats = Array.from(new Set(products.map((p) => p.category)));
+    return ["All", ...cats];
+  }, [products]);
+
+  const filtered = useMemo(() => {
+    return products.filter((p) => {
+      const matchesSearch = p.name.toLowerCase().includes(search.toLowerCase()) ||
+        p.description.toLowerCase().includes(search.toLowerCase());
+      const matchesCategory = selectedCategory === "All" || p.category === selectedCategory;
+      return matchesSearch && matchesCategory;
+    });
+  }, [products, search, selectedCategory]);
 
   const handleAddToCart = (product: any) => {
     const cart: CartItem[] = JSON.parse(localStorage.getItem("cart") || "[]");
@@ -46,14 +62,49 @@ const Products = () => {
         </div>
       </section>
 
-      {/* Products Grid */}
-      <div className="max-w-6xl mx-auto px-4 py-10">
-        <h2 className="text-2xl font-bold mb-6">All Products</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {products.map((product) => (
-            <ProductCard key={product._id} product={product} onAddToCart={handleAddToCart} />
-          ))}
+      {/* Search & Filter */}
+      <div className="max-w-6xl mx-auto px-4 pt-8">
+        <div className="flex flex-col sm:flex-row gap-4 items-stretch sm:items-center">
+          <input
+            type="text"
+            placeholder="Search products..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="flex-1 border border-input bg-background px-4 py-2.5 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+          />
+          <div className="flex gap-2 flex-wrap">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                  selectedCategory === cat
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
         </div>
+      </div>
+
+      {/* Products Grid */}
+      <div className="max-w-6xl mx-auto px-4 py-8">
+        <h2 className="text-2xl font-bold mb-6">
+          {selectedCategory === "All" ? "All Products" : selectedCategory}
+          <span className="text-muted-foreground text-base font-normal ml-2">({filtered.length})</span>
+        </h2>
+        {filtered.length === 0 ? (
+          <p className="text-center text-muted-foreground py-12">No products found matching your search.</p>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filtered.map((product) => (
+              <ProductCard key={product._id} product={product} onAddToCart={handleAddToCart} />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

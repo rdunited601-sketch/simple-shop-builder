@@ -16,12 +16,12 @@ api.interceptors.request.use((config) => {
 
 // ---- MOCK DATA ----
 let mockProducts = [
-  { _id: "1", name: "Wireless Headphones", price: 59.99, description: "Bluetooth over-ear headphones with noise cancellation.", category: "Electronics" },
-  { _id: "2", name: "Running Shoes", price: 89.99, description: "Lightweight running shoes for daily training.", category: "Footwear" },
-  { _id: "3", name: "Backpack", price: 39.99, description: "Water-resistant 25L backpack for travel and work.", category: "Accessories" },
-  { _id: "4", name: "Desk Lamp", price: 24.99, description: "Adjustable LED desk lamp with USB charging port.", category: "Home" },
-  { _id: "5", name: "Water Bottle", price: 14.99, description: "Insulated stainless steel bottle, 750ml.", category: "Accessories" },
-  { _id: "6", name: "Notebook Set", price: 9.99, description: "Pack of 3 lined notebooks, A5 size.", category: "Stationery" },
+  { _id: "1", name: "Wireless Headphones", price: 59.99, description: "Bluetooth over-ear headphones with noise cancellation.", category: "Electronics", image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=300&fit=crop" },
+  { _id: "2", name: "Running Shoes", price: 89.99, description: "Lightweight running shoes for daily training.", category: "Footwear", image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=300&fit=crop" },
+  { _id: "3", name: "Backpack", price: 39.99, description: "Water-resistant 25L backpack for travel and work.", category: "Accessories", image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=300&fit=crop" },
+  { _id: "4", name: "Desk Lamp", price: 24.99, description: "Adjustable LED desk lamp with USB charging port.", category: "Home", image: "https://images.unsplash.com/photo-1507473885765-e6ed057ab6fe?w=400&h=300&fit=crop" },
+  { _id: "5", name: "Water Bottle", price: 14.99, description: "Insulated stainless steel bottle, 750ml.", category: "Accessories", image: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=400&h=300&fit=crop" },
+  { _id: "6", name: "Notebook Set", price: 9.99, description: "Pack of 3 lined notebooks, A5 size.", category: "Stationery", image: "https://images.unsplash.com/photo-1531346878377-a5be20888e57?w=400&h=300&fit=crop" },
 ];
 
 let mockOrders: any[] = [
@@ -75,7 +75,7 @@ export const getProducts = async () => {
 
 export const createProduct = async (product: { name: string; price: number; description: string; category: string }) => {
   if (USE_MOCK) {
-    const newProduct = { ...product, _id: String(nextProductId++) };
+    const newProduct = { ...product, _id: String(nextProductId++), image: "" };
     mockProducts.push(newProduct);
     return newProduct;
   }
